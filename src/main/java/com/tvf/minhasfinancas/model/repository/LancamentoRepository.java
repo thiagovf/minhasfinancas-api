@@ -6,4 +6,5 @@ import com.tvf.minhasfinancas.model.entity.Lancamento;
 
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
+	
 }
