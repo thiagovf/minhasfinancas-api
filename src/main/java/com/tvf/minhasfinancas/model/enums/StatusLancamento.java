@@ -1,4 +1,4 @@
-package com.tvf.minhasfinancas.model.entity;
+package com.tvf.minhasfinancas.model.enums;
 
 public enum StatusLancamento {
 
