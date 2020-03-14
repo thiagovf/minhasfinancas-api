@@ -6,4 +6,8 @@ import com.tvf.minhasfinancas.model.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
+	//query methods
+	//Optional<Usuario> findByEmail(String email);
+
+	boolean existsByEmail(String email);
 }
