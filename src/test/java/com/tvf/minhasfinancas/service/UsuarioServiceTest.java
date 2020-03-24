@@ -24,69 +24,75 @@ public class UsuarioServiceTest {
 
 //	@Autowired
 	UsuarioService service;
-	
+
 //	@Autowired
 	@MockBean
 	UsuarioRepository repository;
-	
-	
+
 	@Before
 	public void setUp() {
 //		repository = Mockito.mock(UsuarioRepository.class);
-		service = new UsuarioServiceImpl(repository);
+//		service = new UsuarioServiceImpl(repository);
+		service = Mockito.spy(UsuarioServiceImpl.class);
 	}
-	
+
 	@Test(expected = Test.None.class)
 	public void deveAutenticarUmUsuarioComSucesso() {
-		//cenario
+		// cenario
 		String email = "email@email.com";
 		String senha = "senha";
-		
+
 		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1l).build();
 		Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
-		
-		//acao
+
+		// acao
 		Usuario result = service.autenticar(email, senha);
-		
-		//verificacao
+
+		// verificacao
 		Assertions.assertThat(result).isNotNull();
 	}
-	
-	@Test(expected = ErroAutenticacao.class)
+
+	@Test
 	public void deveLancarErroQuandoNaoEncontrarUsuarioCadastradoComOEmailInformado() {
-		//cenario
+		// cenario
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-		
-		//acao
-		service.autenticar("email@email.com", "senha");
+
+		// acao
+		Throwable exception = Assertions.catchThrowable(() -> service.autenticar("email@email.com", "senha"));
+
+		// verificacao
+		Assertions.assertThat(exception).isInstanceOf(ErroAutenticacao.class).hasMessage("Usuário não encontrado.");
 	}
-	
-	@Test(expected = ErroAutenticacao.class)
+
+	@Test
 	public void deveLancarErroQuandoSenhaNaoBater() {
-		//cenario
+		// cenario
 		String senha = "senha";
 		Usuario usuario = Usuario.builder().email("email@email.com").senha(senha).build();
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
-		
-		//acao
-		service.autenticar("email@email.com", "123");
+
+		// acao
+		Throwable exception = Assertions.catchThrowable(() -> service.autenticar("email@email.com", "123"));
+
+		// verificacao
+		Assertions.assertThat(exception).isInstanceOf(ErroAutenticacao.class).hasMessage("Senha inválida.");
 	}
-	
+
 	@Test(expected = Test.None.class)
 	public void deveValidarEmail() {
-		//cenario
+		// cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
-		
-		//acao
+
+		// acao
 		service.validarEmail("email@email.com");
 	}
-	
+
 	@Test(expected = RegraNegocioException.class)
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
-		//cenario
+		// cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
-		
-		//acao
+
+		// acao
 		service.validarEmail("email@email.com");
 	}
 }
