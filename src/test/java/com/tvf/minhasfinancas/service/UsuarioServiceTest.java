@@ -21,11 +21,50 @@ import com.tvf.minhasfinancas.service.impl.UsuarioServiceImpl;
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
+	/**
+	 * O Spy chama sempre o método original. Ele só vai mocar aqueles métodos que
+	 * eu explicitamente diga que é pra ser mocado e diga como ele vai se comportar.
+	 * Já o mock @mockbean vai mocar todos os métodos, nunca chamando o método original.
+	 */
 	@SpyBean
 	UsuarioServiceImpl service;
 
 	@MockBean
 	UsuarioRepository repository;
+	
+	@Test(expected = Test.None.class)
+	public void deveSalvarUmUsuario() {
+		//cenario
+		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
+		Usuario usuario = Usuario.builder().id(1l).nome("nome").email("email@email.com").senha("senha").build();
+		
+		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+		
+		//acao
+		Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+		
+		//verificacao
+		Assertions.assertThat(usuarioSalvo).isNotNull();
+		Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
+		Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
+		Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
+		Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
+	}
+	
+	@Test(expected = RegraNegocioException.class)
+	public void naoDeveSalvarUsuarioComEmailJaCadastrado() {
+		//cenario
+		String email = "email@email.com";
+		Usuario usuario = Usuario.builder().email(email).build();
+		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
+		
+		//acao
+		service.salvarUsuario(usuario);
+		
+		//verificacao
+		Mockito.verify(repository, Mockito.never()).save(usuario);
+		
+	}
 
 	@Test(expected = Test.None.class)
 	public void deveAutenticarUmUsuarioComSucesso() {
