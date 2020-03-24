@@ -3,11 +3,11 @@ package com.tvf.minhasfinancas.service;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,26 +15,16 @@ import com.tvf.minhasfinancas.exception.ErroAutenticacao;
 import com.tvf.minhasfinancas.exception.RegraNegocioException;
 import com.tvf.minhasfinancas.model.entity.Usuario;
 import com.tvf.minhasfinancas.model.repository.UsuarioRepository;
-import com.tvf.minhasfinancas.service.impl.UsuarioServiceImpl;
 
-//@SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
-//	@Autowired
+	@SpyBean
 	UsuarioService service;
 
-//	@Autowired
 	@MockBean
 	UsuarioRepository repository;
-
-	@Before
-	public void setUp() {
-//		repository = Mockito.mock(UsuarioRepository.class);
-//		service = new UsuarioServiceImpl(repository);
-		service = Mockito.spy(UsuarioServiceImpl.class);
-	}
 
 	@Test(expected = Test.None.class)
 	public void deveAutenticarUmUsuarioComSucesso() {
