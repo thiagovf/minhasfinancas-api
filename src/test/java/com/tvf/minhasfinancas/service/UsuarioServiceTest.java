@@ -15,13 +15,14 @@ import com.tvf.minhasfinancas.exception.ErroAutenticacao;
 import com.tvf.minhasfinancas.exception.RegraNegocioException;
 import com.tvf.minhasfinancas.model.entity.Usuario;
 import com.tvf.minhasfinancas.model.repository.UsuarioRepository;
+import com.tvf.minhasfinancas.service.impl.UsuarioServiceImpl;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
 	@SpyBean
-	UsuarioService service;
+	UsuarioServiceImpl service;
 
 	@MockBean
 	UsuarioRepository repository;
