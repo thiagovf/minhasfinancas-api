@@ -76,7 +76,7 @@ public class LancamentoRepositoryTest {
 		Assertions.assertThat(lancamentoEcontrado.isPresent()).isTrue();
 	}
 
-	private Lancamento criarLancamento() {
+	public static Lancamento criarLancamento() {
 		Lancamento lancamento = Lancamento.builder().ano(2020).mes(1).descricao("lancamento qualquer")
 				.tipo(TipoLancamento.RECEITA).status(StatusLancamento.PENDENTE).dataCadastro(LocalDate.now()).build();
 		return lancamento;
