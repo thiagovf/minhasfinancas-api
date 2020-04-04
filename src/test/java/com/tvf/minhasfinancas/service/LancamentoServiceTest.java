@@ -118,15 +118,33 @@ public class LancamentoServiceTest {
 		// cenario
 		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(1l);
-		
+
 		List<Lancamento> lista = Arrays.asList(lancamento);
 		Mockito.when(repository.findAll(Mockito.any(Example.class))).thenReturn(lista);
-		
+
 		// execucao
 		List<Lancamento> resultado = service.buscar(lancamento);
-		
-		// verificacoes 
+
+		// verificacoes
 		Assertions.assertThat(resultado).isNotEmpty().hasSize(1).contains(lancamento);
+
+	}
+
+	@Test
+	public void deveAtualizarOStatusDeUmLancamento() {
+		// cenario
+		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
+		lancamento.setId(1l);
+		lancamento.setStatus(StatusLancamento.PENDENTE);
 		
+		StatusLancamento novoStatus = StatusLancamento.EFETIVADO;
+		Mockito.doReturn(lancamento).when(service).atualizar(lancamento);
+		
+		// execucao
+		service.atualizarStatus(lancamento, novoStatus);
+		
+		// verificacao
+		Assertions.assertThat(lancamento.getStatus()).isEqualTo(novoStatus);
+		Mockito.verify(service).atualizar(lancamento);
 	}
 }
